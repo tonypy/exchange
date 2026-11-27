@@ -32,9 +32,7 @@ Use a configured trading pair and funded test accounts. The ExchangeService inte
 4. Cancel a separate open order using POST /exchange/cancelOrderForUser. Check that the order is removed from the open-order list and that a cancellation event is published.
 These steps are based on the repository’s README and service interfaces. Startup and API calls were not verified against a running environment.
 
-
-#开发和发布准备
-撮合分支：feature/stage、feature/jsg_exchange_20220208
+start
 1、添加kafkatopic：
     ./kafka-topics.sh --create --zookeeper 10.24.3.158:2181 --replication-factor 1 --partitions 54 --topic exchange-order-comm-v1
     ./kafka-topics.sh --create --zookeeper 10.24.3.158:2181 --replication-factor 1 --partitions 12 --topic exchange-order-hot-v1
