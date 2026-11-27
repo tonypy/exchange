@@ -87,7 +87,7 @@ The deployment notes reference `feature/stage` and `feature/jsg_exchange_2022020
 | `tradeparent` | Merge into staging with completed-order persistence removed, publish the package, and build and deploy `webapp`. |
 | `account-service` | Remove Kafka and Elasticsearch consumer logic, merge into staging, publish the package, and restart `webapp`. |
 | `common-tech-components`, `config-service` | Merge into `master` and publish the packages. |
-| `exchange`, `bkex_api`, `bkex_admin` | Include the exchange services, API component, and administration application in the release. |
+| `exchange`, `bex_api`, `bex_admin` | Include the exchange services, API component, and administration application in the release. |
 | `webapp` | Merge into staging and route calls to the new matching engine. |
 
 ## 5. Kafka Events and Consumer Groups
@@ -122,15 +122,15 @@ The deployment checklist removes some downstream consumers. Confirm persistence 
 ### Database Queries
 
 ```sql
-SELECT * FROM bkex_exchange.tbl_user_ex_account WHERE id = '<wallet_account_id>';
+SELECT * FROM bex_exchange.tbl_user_ex_account WHERE id = '<wallet_account_id>';
 SELECT * FROM tbl_trade_order_unfinished WHERE id = '<open_order_id>';
 ```
 
 | Configuration table | Purpose |
 |---|---|
-| `bkex_exchange.tbl_trade_pair_frequency` | High-activity trading pair configuration. |
-| `bkex_exchange.tbl_machine_static_config` | Spot trading bot accounts. |
-| `bkex_machine.tbl_etp_static_config` | Spot ETP trading bot accounts. |
+| `bex_exchange.tbl_trade_pair_frequency` | High-activity trading pair configuration. |
+| `bex_exchange.tbl_machine_static_config` | Spot trading bot accounts. |
+| `bex_machine.tbl_etp_static_config` | Spot ETP trading bot accounts. |
 
 ### Kafka Diagnostics
 
