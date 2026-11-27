@@ -1,3 +1,38 @@
+Project Description
+Exchange is a Java backend for a digital asset exchange. It handles order submission, cancellation, and matching, and maintains order-book depth for trading pairs. The matching service publishes trade, cancellation, and balance-change events through Kafka so downstream services can update order records and synchronize transaction data.
+
+The codebase is organized as a six-module Maven project, with separate Spring Boot applications for API serving, order matching, and data synchronization. The main technology stack includes Java 8, Spring Boot, Spring Cloud OpenFeign, Nacos, Kafka, Redis, and Maven.
+Project Modules
+Module	Responsibilities
+exchange-api	Defines shared service interfaces and data contracts for exchange operations, matching results, batch cancellations, order-book depth, and synchronization. Other modules use these contracts to communicate.
+exchange-impl	Contains the core business logic, including per-pair order matching, order command processing, order-book maintenance, and Kafka event handling. It also implements the services shared by the three Spring Boot applications.
+exchange-db	Provides database entities and mappers for open and completed orders, trade records, user exchange accounts, balance-change history, and fee statistics.
+exchange-rest	Runs the HTTP-facing exchange application, providing the application entry point and web configuration for exchange service APIs.
+exchange-engine	Runs the matching engine application and initializes it at startup. It uses the matching logic in exchange-impl to process order and cancellation commands.
+exchange-sync	Runs the data synchronization application. It uses shared Kafka listeners to process trade events and synchronize trade records with the database and Elasticsearch.
+
+
+How to Run and Use Exchange
+Exchange runs as a backend service. Client applications submit and cancel orders through the REST API, while the matching engine processes orders and downstream services consume the resulting events.
+1. Set up the environment
+Use Java 8 and Maven, and configure access to the project's internal com.weibi Maven dependencies. Set up Nacos for service discovery and configuration, then configure Kafka, Redis, the trade database, and Elasticsearch. The repository README lists the Kafka topics and the Nacos configuration required for each service.
+2. Build and start the services
+From the Maven project root, run mvn clean package. Start the three Spring Boot applications with their corresponding Nacos configurations:
+Service	Spring Boot entry point	Role
+exchange-engine	ExchangeEngineApplication	Processes order and cancellation commands.
+exchange-sync	ExchangeSyncApplication	Consumes trade events and synchronizes trade records.
+exchange-rest	ExchangeRestApplication	Exposes the API used by calling applications.
+
+
+3. Test an order end to end
+Use a configured trading pair and funded test accounts. The ExchangeService interface defines the request parameters for each endpoint.
+1. Submit a limit order using POST /exchange/createOrderForUser.
+2. Check the order book and open orders using GET /exchange/getQuotationOrdersDepth and GET /exchange/getTradeOrderUnfinishedList.
+3. Submit a compatible order on the opposite side to test matching. Check the resulting Kafka trade event and the synchronized trade record.
+4. Cancel a separate open order using POST /exchange/cancelOrderForUser. Check that the order is removed from the open-order list and that a cancellation event is published.
+These steps are based on the repository’s README and service interfaces. Startup and API calls were not verified against a running environment.
+
+
 #开发和发布准备
 撮合分支：feature/stage、feature/jsg_exchange_20220208
 1、添加kafkatopic：
